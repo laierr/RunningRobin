@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "running-robin.fullname" . }}
+  labels:
+    {{- include "running-robin.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+        {{- include "running-robin.selectorLabels" . | nindent 8 }}
+  template:
+    metadata:
+      labels:
+        {{ .Values.app.label }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: 
+          ports:
+            - containerPort: 5000
+          env:
+            - name: REQUEST_TIMEOUT
+              value: "{{ .Values.app.requestTimeout }}"
+            - name: TARGET_URL
+              value: "{{ .Values.app.targetUrl }}"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
