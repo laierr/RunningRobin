@@ -1,5 +1,0 @@
-{
-    "yaml.schemas": {
-        "https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/raw/master/pkg/agentcfg/agentcfg_schemas/ConfigurationFile.json": "file:///c%3A/Users/kende/OneDrive/Documents/%21stpk/python/rrobin/charts/running-robin/templates/ingress.yaml"
-    }
-}
