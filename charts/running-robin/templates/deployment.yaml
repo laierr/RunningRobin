@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "running-robin.fullname" . }}
+  labels:
+    {{- include "running-robin.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "running-robin.name" . }}
+  template:
+    metadata:
+      labels:
+        {{- include "running-robin.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: REQUEST_INTERVAL
+              value: "{{ .Values.env.REQUEST_INTERVAL }}"
+            - name: PORT
+              value: "{{ .Values.env.PORT }}"
+            - name: ROLE
+              value: "{{ .Values.env.ROLE }}_{{ .Chart.Name }}"
+            - name: TARGET_URL
+              value: "{{ .Values.env.TARGET_URL }}"
+          livenessProbe:
+            httpGet:
+              path: /health_check
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health_check
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

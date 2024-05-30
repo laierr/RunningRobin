@@ -1,0 +1,37 @@
+replicaCount: 3
+
+image:
+  repository: laierr/running-robin
+  pullPolicy: IfNotPresent
+  tag: "v0.2"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+  hosts:
+    - host: localhost
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: []
+
+env:
+  REQUEST_INTERVAL: "10"
+  PORT: "5000"
+  ROLE: "service"
+  TARGET_URL: "http://running-robin/health_check"
+
+prometheus:
+  enabled: true
+  port: 9110
+
